@@ -1,16 +1,15 @@
 package com.jinx.statistics.service;
 
-import com.jinx.statistics.pojo.dto.StatisticsLogDTO;
-
 import java.io.File;
 import java.util.List;
 
 public interface StatisticsService {
     /**
      * 统计日志
-     * @param logDTOs 日志数据
+     * @param names 数据表名列表
+     * @param values 数据表值列表
      */
-    void log(List<StatisticsLogDTO> logDTOs);
+    void log(List<String> names, List<String> values);
 
     /**
      * 获取src/main/resources/backups/statistics/文件夹内文件列表

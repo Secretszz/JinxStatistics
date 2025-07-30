@@ -28,3 +28,4 @@ spring:
 app:
   scheduled: ${dev.statistics-update-scheduled}
   statistics-file-dir: ${user.dir}/${dev.statistics-file-dir}
+  ips-config-path: ${user.dir}/config

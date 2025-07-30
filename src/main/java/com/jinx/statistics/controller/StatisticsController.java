@@ -1,6 +1,5 @@
 package com.jinx.statistics.controller;
 
-import com.jinx.statistics.pojo.dto.StatisticsLogDTO;
 import com.jinx.statistics.response.ApiResponse;
 import com.jinx.statistics.service.StatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,13 +25,15 @@ public class StatisticsController {
 
     /**
      * 统计数据
-     * @param list 统计数据
+     * @param names
+     * @param values
      * @return 返回成功
      */
-    @PostMapping("/log")
+    @PostMapping(value = "/log", consumes = "application/x-www-form-urlencoded")
     @Operation(summary = "统计数据")
-    public ApiResponse<String> log(List<StatisticsLogDTO> list){
-        statisticsService.log(list);
+    public ApiResponse<String> log(@RequestParam(name = "name", required = false) List<String> names,
+                                   @RequestParam(name = "value", required = false) List<String> values){
+        statisticsService.log(names, values);
         return ApiResponse.success();
     }
 

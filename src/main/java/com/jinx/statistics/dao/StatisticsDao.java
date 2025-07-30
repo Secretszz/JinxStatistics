@@ -1,6 +1,6 @@
 package com.jinx.statistics.dao;
 
-import com.jinx.statistics.pojo.entity.Statistics;
+import com.jinx.statistics.pojo.Statistics;
 import com.jinx.statistics.utility.FileUtility;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;

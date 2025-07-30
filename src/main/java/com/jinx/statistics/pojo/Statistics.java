@@ -1,4 +1,4 @@
-package com.jinx.statistics.pojo.entity;
+package com.jinx.statistics.pojo;
 
 import com.jinx.statistics.utility.FileUtility;
 import lombok.extern.slf4j.Slf4j;

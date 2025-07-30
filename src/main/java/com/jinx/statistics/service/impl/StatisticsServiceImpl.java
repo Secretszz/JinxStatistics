@@ -3,21 +3,22 @@ package com.jinx.statistics.service.impl;
 import com.jinx.statistics.constant.MessageConstant;
 import com.jinx.statistics.dao.StatisticsDao;
 import com.jinx.statistics.exception.BaseException;
-import com.jinx.statistics.pojo.dto.StatisticsLogDTO;
 import com.jinx.statistics.service.StatisticsService;
-import com.jinx.statistics.utility.FileUtility;
 import com.jinx.statistics.utility.StringUtility;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,13 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     private final StatisticsDao dao;
 
+    /**
+     * 间隔多久检查一次ip许可列表配置是否更新了
+     */
+    private long lastModifiedTime;
+
+    private Document document;
+
     public StatisticsServiceImpl(StatisticsDao dao) {
         this.dao = dao;
     }
@@ -36,16 +44,17 @@ public class StatisticsServiceImpl implements StatisticsService {
     /**
      * 统计日志
      *
-     * @param logDTOs 日志数据
+     * @param names 数据表名列表
+     * @param values 数据表值列表
      */
     @Override
-    public void log(List<StatisticsLogDTO> logDTOs) {
-        if (logDTOs == null || logDTOs.isEmpty()) {
+    public void log(List<String> names, List<String> values) {
+        if (names == null || values == null || names.size() != values.size()) {
             return;
         }
-        for (StatisticsLogDTO logDTO : logDTOs) {
-            String name = logDTO.getName();
-            String value = logDTO.getValue();
+        for (int i = 0; i < names.size(); i++) {
+            String name = names.get(i);
+            String value = values.get(i);
             if (!StringUtils.hasLength(name) || !StringUtils.hasLength(value)) {
                 continue;
             }
@@ -138,16 +147,30 @@ public class StatisticsServiceImpl implements StatisticsService {
         return (new SimpleDateFormat("yyyyMMdd")).format(new Date());
     }
 
-    private String listHtml(String bodyContent) throws Exception {
-        File file = FileUtility.getFile("src/main/resources/templates/StatisticsList.html");
-        byte[] bytes = Files.readAllBytes(file.toPath());
-        String template = new String(bytes, StandardCharsets.UTF_8);
-
-        Document document = Jsoup.parse(template);
-
+    private String listHtml(String bodyContent) {
         Element body = document.body();
         body.html(""); // 清空body
         body.append(bodyContent);
         return document.outerHtml();
+    }
+
+    /**
+     * 定时检查文件是否被修改
+     */
+    @Scheduled(fixedDelay = 5000)
+    public void checkForChanges(){
+        try {
+            Resource resource = new ClassPathResource("templates/StatisticsList.html");
+            if (resource.getFile().lastModified() > lastModifiedTime) {
+                lastModifiedTime = resource.getFile().lastModified();
+                log.info("Resource has changed, refreshing...");
+                // 执行资源刷新逻辑
+                byte[] bytes = resource.getContentAsByteArray();
+                String template = new String(bytes, StandardCharsets.UTF_8);
+                document = Jsoup.parse(template);
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
     }
 }
