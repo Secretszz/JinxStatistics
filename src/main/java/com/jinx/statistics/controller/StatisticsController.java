@@ -4,7 +4,6 @@ import com.jinx.statistics.pojo.dto.StatisticsLogDTO;
 import com.jinx.statistics.response.ApiResponse;
 import com.jinx.statistics.service.StatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;

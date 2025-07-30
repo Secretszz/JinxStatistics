@@ -1,7 +1,6 @@
 package com.jinx.statistics.service;
 
 import com.jinx.statistics.pojo.dto.StatisticsLogDTO;
-import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.util.List;

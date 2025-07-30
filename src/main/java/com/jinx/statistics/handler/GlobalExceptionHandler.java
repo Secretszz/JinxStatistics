@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(BaseException.class)
-    public ApiResponse exceptionHandler(BaseException ex){
+    public ApiResponse<String> exceptionHandler(BaseException ex){
         log.error("异常信息：{}", ex.getMessage());
         return ApiResponse.error(ex.getMessage());
     }
