@@ -1,0 +1,34 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+
+spring:
+  profiles:
+    active: dev
+  main:
+    allow-circular-references: true
+  application:
+   name: JinxStatistics
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      indent-output: false
+      fail_on_empty_beans: false
+    deserialization:
+      fail_on_unknown_properties: false
+    parser:
+      allow_unquoted_control_chars: true
+      allow_single_quotes: true
+    default-property-inclusion: non_null
+    property-naming-strategy: SNAKE_CASE
+
+app:
+  scheduled: 60000
+  name: jinx_statistics
+  web-port: 9908
+  ver: 1.0
+  file-dir: src/main/resources/backups/statistics/
+debug: false
