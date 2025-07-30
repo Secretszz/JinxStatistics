@@ -1,13 +1,12 @@
 package com.jinx.statistics.dao;
 
 import com.jinx.statistics.pojo.entity.Statistics;
-import com.jinx.statistics.properties.AppProperties;
 import com.jinx.statistics.utility.FileUtility;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -22,7 +21,8 @@ public class StatisticsDao {
     /**
      * 应用属性
      */
-    final AppProperties appProperties;
+    @Value("${app.statistics-file-dir}")
+    String fileDir;
 
     /**
      * 当前的缓存
@@ -39,8 +39,7 @@ public class StatisticsDao {
      */
     List<String> zipCache;
 
-    public StatisticsDao(AppProperties appProperties) {
-        this.appProperties = appProperties;
+    public StatisticsDao() {
         cache = new HashMap<>();
         date = nowStrYMD();
         zipCache = new ArrayList<>();
@@ -50,7 +49,7 @@ public class StatisticsDao {
         String key = String.format("%s_%s", date, name);
         Statistics obj = cache.get(key);
         if (obj == null) {
-            obj = new Statistics(date, name, value, this.appProperties.getFileDir());
+            obj = new Statistics(date, name, value, this.fileDir);
             cache.put(key, obj);
         } else {
             obj.append(value);
@@ -59,8 +58,13 @@ public class StatisticsDao {
     }
 
     public File[] getFiles(String dirName){
-        File dir = FileUtility.getDirectory(this.appProperties.getFileDir() + dirName);
+        File dir = FileUtility.getDirectory(String.join("/", this.fileDir, dirName));
         return dir.listFiles();
+    }
+
+    public File getFile(String path) throws Exception {
+        path = String.join("/", this.fileDir, path);
+        return FileUtility.getFile(path);
     }
 
     private String nowStrYMD(){
@@ -126,8 +130,8 @@ public class StatisticsDao {
             if (dir.equals(date)){
                 return "today file can not be zipped";
             }
-            String filePath = this.appProperties.getFileDir() + dir;
-            File file = FileUtility.openFile(this.appProperties.getFileDir() + dir);
+            String filePath = String.join("/", this.fileDir, dir);
+            File file = FileUtility.openFile(filePath);
             if (!file.exists()) {
                 log.info("zip file {} not exists", dir);
                 return "file not exists";
@@ -137,7 +141,7 @@ public class StatisticsDao {
                 return "file is hidden";
             }
 
-            String zipFilePath = String.format("%s%s.zip", this.appProperties.getFileDir(), file.getName());
+            String zipFilePath = String.format("%s/%s.zip", this.fileDir, file.getName());
             FileUtility.zipFolder(filePath, zipFilePath);
             log.info("文件压缩成功: {} ", zipFilePath);
             return "zip success";

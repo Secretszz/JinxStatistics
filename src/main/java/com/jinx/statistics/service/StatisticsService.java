@@ -3,12 +3,15 @@ package com.jinx.statistics.service;
 import com.jinx.statistics.pojo.dto.StatisticsLogDTO;
 import org.springframework.core.io.Resource;
 
+import java.io.File;
+import java.util.List;
+
 public interface StatisticsService {
     /**
      * 统计日志
-     * @param logDTO 日志数据
+     * @param logDTOs 日志数据
      */
-    void log(StatisticsLogDTO logDTO);
+    void log(List<StatisticsLogDTO> logDTOs);
 
     /**
      * 获取src/main/resources/backups/statistics/文件夹内文件列表
@@ -19,11 +22,10 @@ public interface StatisticsService {
 
     /**
      * 下载src/main/resources/backups/statistics/文件夹下的文件
-     * @param dir 文件夹名
-     * @param file 文件名
+     * @param path 文件路径
      * @return 文件
      */
-    Resource download(String dir, String file);
+    File download(String path);
 
     /**
      * 压缩src/main/resources/backups/statistics/文件夹下的文件夹

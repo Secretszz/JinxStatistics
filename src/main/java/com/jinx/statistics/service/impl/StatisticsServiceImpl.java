@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -37,20 +38,22 @@ public class StatisticsServiceImpl implements StatisticsService {
     /**
      * 统计日志
      *
-     * @param logDTO 日志数据
+     * @param logDTOs 日志数据
      */
     @Override
-    public void log(StatisticsLogDTO logDTO) {
-        String name = logDTO.getName();
-        String value = logDTO.getValue();
-        if (!StringUtils.hasLength(name)) {
-            throw new BaseException(MessageConstant.EMPTY_NAME);
+    public void log(List<StatisticsLogDTO> logDTOs) {
+        if (logDTOs == null || logDTOs.isEmpty()) {
+            return;
         }
-        if (!StringUtils.hasLength(value)){
-            throw new BaseException(MessageConstant.EMPTY_VALUE);
-        }
+        for (StatisticsLogDTO logDTO : logDTOs) {
+            String name = logDTO.getName();
+            String value = logDTO.getValue();
+            if (!StringUtils.hasLength(name) || !StringUtils.hasLength(value)) {
+                continue;
+            }
 
-        dao.appendStatistics(name, value);
+            dao.appendStatistics(name, value);
+        }
     }
 
     /**
@@ -61,9 +64,12 @@ public class StatisticsServiceImpl implements StatisticsService {
      */
     @Override
     public String list(String dirName) {
+        if (dirName == null) {
+            dirName = "";
+        }
         try {
-            String refDownload = String.format("/statistics/download/%s", dirName);
-            String refList = "/statistics/list";
+            String refDownload = "/statistics/download?path=";
+            String refList = "/statistics/list?path=";
 
             Object[] empty = new Object[0];
             File[] files = dao.getFiles(dirName);
@@ -76,16 +82,22 @@ public class StatisticsServiceImpl implements StatisticsService {
             if (StringUtils.hasLength(dirName)) {
                 StringUtility.appendLine(sb, "<li><a href=\"%s\">..</a></li>", new Object[]{refList});
                 if (!dirName.equals(nowStrYMD())){
-                    StringUtility.appendLine(sb, "<li><a href=\"%s\">%s</a></li>", new Object[]{refDownload + "/", "下载zip全部文件"});
+                    StringUtility.appendLine(sb, "<li><a href=\"%s\">%s</a></li>", new Object[]{refDownload.concat(dirName + ".zip"), "下载zip全部文件"});
                 }
             }
             for (File file : files) {
                 boolean isDir = file.isDirectory();
                 String name = file.getName();
-                if (!isDir && !name.endsWith(".csv")) {
-                    continue;
+                String ref;
+                if (isDir){
+                    ref = refList.concat(name);
+                } else {
+                    if (StringUtils.hasLength(dirName)) {
+                        ref = refDownload.concat(String.join("/", dirName, name));
+                    } else {
+                        ref = refDownload.concat(name);
+                    }
                 }
-                String ref = String.join("/", (isDir ? refList : refDownload), name);
                 StringUtility.appendLine(sb, "<li><a href=\"%s\">%s</a></li>", new Object[]{ref, name});
             }
             StringUtility.appendLine(sb, "</ul>", empty);
@@ -98,24 +110,17 @@ public class StatisticsServiceImpl implements StatisticsService {
     /**
      * 下载文件
      *
-     * @param dir  文件夹名
-     * @param file 文件名
+     * @param path  文件夹名
      * @return 文件
      */
     @Override
-    public Resource download(String dir, String file) {
+    public File download(String path) {
         try {
-            String filePath = "backups/statistics/" + dir;
-            if (StringUtils.hasLength(file)) {
-                filePath = String.format("%s/%s", filePath, file);
-            } else {
-                filePath = filePath + ".zip";
-            }
-            Resource resource = new ClassPathResource(filePath);
-            if (!resource.exists()) {
+            File file = dao.getFile(path);
+            if (!file.exists()) {
                 throw new BaseException(MessageConstant.EMPTY_FILE);
             }
-            return resource;
+            return file;
         } catch (Exception e) {
             throw new BaseException(e);
         }

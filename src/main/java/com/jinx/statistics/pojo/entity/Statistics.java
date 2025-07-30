@@ -20,7 +20,7 @@ public class Statistics implements Serializable {
     public Statistics(String date, String name, String value, String fileDir) {
         this.date = date;
         this.name = name;
-        this.filePath = String.format("%s%s/%s.csv", fileDir, date, name);
+        this.filePath = String.join("/", fileDir, date, name + ".csv");
         try {
             this.file = FileUtility.getFile(this.filePath);
         } catch (Exception e) {

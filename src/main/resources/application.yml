@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${dev.web-port}
   servlet:
     encoding:
       charset: utf-8
@@ -11,7 +11,7 @@ spring:
   main:
     allow-circular-references: true
   application:
-   name: JinxStatistics
+    name: ${dev.name}
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     serialization:
@@ -26,9 +26,5 @@ spring:
     property-naming-strategy: SNAKE_CASE
 
 app:
-  scheduled: 60000
-  name: jinx_statistics
-  web-port: 9908
-  ver: 1.0
-  file-dir: src/main/resources/backups/statistics/
-debug: false
+  scheduled: ${dev.statistics-update-scheduled}
+  statistics-file-dir: ${user.dir}/${dev.statistics-file-dir}
