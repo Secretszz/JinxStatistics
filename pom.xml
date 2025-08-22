@@ -81,6 +81,7 @@
     </dependencies>
 
     <build>
+        <finalName>JinxStatistics</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -102,7 +103,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>external-libs/</classpathPrefix>
+                            <classpathPrefix>libs/</classpathPrefix>
                             <mainClass>com.jinx.statistics.JinxStatisticsApplication</mainClass>
                         </manifest>
                     </archive>
@@ -120,7 +121,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.basedir}/external-libs</outputDirectory>
+                            <outputDirectory>${project.basedir}/libs</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
