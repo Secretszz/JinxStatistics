@@ -1,0 +1,6 @@
+dev:
+  name: jinx_statistics
+  web-port: 9908
+  statistics-file-dir: backups/statistics
+  # 缓存文件定时器的间隔（毫秒）
+  statistics-update-scheduled: 60000

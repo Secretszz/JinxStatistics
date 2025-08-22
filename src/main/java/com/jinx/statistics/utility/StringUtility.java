@@ -6,6 +6,10 @@ public class StringUtility {
         sb.append(String.format(s, args)).append("\r\n");
     }
 
+    public static void appendLine(StringBuilder sb, String s, Object[] args) {
+        sb.append(String.format(s, args)).append("\r\n");
+    }
+
     public static String urlConcat(String delimiter, String[] elements){
         for (int i = 0; i < elements.length; i++) {
             if (elements[i].endsWith("/")){

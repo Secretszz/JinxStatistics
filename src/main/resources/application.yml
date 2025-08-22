@@ -12,6 +12,7 @@ spring:
     allow-circular-references: true
   application:
     name: ${dev.name}
+    version: 1.0
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     serialization:
@@ -24,8 +25,16 @@ spring:
       allow_single_quotes: true
     default-property-inclusion: non_null
     property-naming-strategy: SNAKE_CASE
-
 app:
   scheduled: ${dev.statistics-update-scheduled}
   statistics-file-dir: ${user.dir}/${dev.statistics-file-dir}
-  ips-config-path: ${user.dir}/config
+  ips-config-path: ${user.dir}/config/ips.xml
+  ip-filter:
+    enabled: true
+    allow-localhost: true
+    check-interval: 5000
+  cache:
+    max-size: 10000
+    flush-threshold: 1000
+  cors:
+    enabled: true
