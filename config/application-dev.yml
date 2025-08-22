@@ -4,3 +4,4 @@ dev:
   statistics-file-dir: backups/statistics
   # 缓存文件定时器的间隔（毫秒）
   statistics-update-scheduled: 60000
+  logging-level: info

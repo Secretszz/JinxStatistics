@@ -25,6 +25,11 @@ spring:
       allow_single_quotes: true
     default-property-inclusion: non_null
     property-naming-strategy: SNAKE_CASE
+
+logging:
+  level:
+    root: ${dev.logging-level}
+
 app:
   scheduled: ${dev.statistics-update-scheduled}
   statistics-file-dir: ${user.dir}/${dev.statistics-file-dir}

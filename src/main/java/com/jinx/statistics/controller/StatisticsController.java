@@ -33,7 +33,7 @@ public class StatisticsController {
      * @param data 统计数据（键值对）
      * @return 返回成功
      */
-    @PostMapping(value = "/log/map", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/log", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
         summary = "统计数据（Map格式）", 
         description = "记录统计数据，接收键值对格式的数据"

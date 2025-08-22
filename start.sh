@@ -1,8 +1,11 @@
 #!/bin/bash
 
+# 确保 log 文件夹存在
+mkdir -p log
+
 # 定义变量
-APP_NAME="JinxStatistics-0.0.1-SNAPSHOT.jar"
-LOG_FILE="app.log"
+APP_NAME="JinxStatistics.jar"
+LOG_FILE="log/app.log"
 JAVA_OPTS="-Xms256m -Xmx512m"
 
 # 检查 Java 版本
