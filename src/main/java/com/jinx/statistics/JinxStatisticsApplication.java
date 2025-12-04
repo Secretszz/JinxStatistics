@@ -63,7 +63,7 @@ public class JinxStatisticsApplication {
         StringBuffer sb = new StringBuffer();
         String end = "\r\n";
         sb.append("/////////////////////////////////////////").append(end);
-        sb.append(String.format("// Application   :%s v: %.2f", APP_NAME, VERSION)).append(end);
+        sb.append(String.format("// Application   :%s v: %s", APP_NAME, VERSION)).append(end);
         sb.append(String.format("// WEB_PORT on   :%s", WEB_PORT)).append(end);
         sb.append(String.format("// End Time      :%s", DateUtility.format(new Date()))).append(end);
         sb.append(String.format("// Exception     :%s", e.getMessage())).append(end);
